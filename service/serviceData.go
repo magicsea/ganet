@@ -26,7 +26,9 @@ func (s *ServiceData) Init(addr string, name string, typename string) {
 	s.Name = name
 	s.TypeName = typename
 }
+func (s *ServiceData) OnRun() {
 
+}
 func (s *ServiceData) GetType() string {
 	return s.TypeName
 }

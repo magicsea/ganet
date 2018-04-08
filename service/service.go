@@ -23,7 +23,13 @@ type IService interface {
 	OnReceive(context Context)
 	OnInit()
 	OnStart(as *ActorService)
+	//正式运行(服务线程)
+	OnRun()
+
 	OnDestory()
+}
+
+type ServiceRun struct {
 }
 
 //interface
@@ -53,6 +59,9 @@ func (s *ActorService) Receive(context actor.Context) {
 		fmt.Println("Stopped, actor and its children are stopped")
 	case *actor.Restarting:
 		fmt.Println("Restarting, actor is about restart")
+	case *ServiceRun:
+		fmt.Println("ServiceRun ", s.serviceIns.GetName())
+		s.serviceIns.OnRun()
 	default:
 		log.Debug("recv defalult:", msg)
 		s.serviceIns.OnReceive(context.(Context))
