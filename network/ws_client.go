@@ -79,7 +79,7 @@ func (client *WSClient) dial() *websocket.Conn {
 			return conn
 		}
 
-		log.Info("connect to %v error: %v", client.Addr, err)
+		log.Info("connect to [%v] error: %v", client.Addr, err)
 		time.Sleep(client.ConnectInterval)
 		continue
 	}
