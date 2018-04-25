@@ -78,7 +78,15 @@ func (s *ActorService) RegisterMsg(t reflect.Type, f MessageFunc) {
 
 func StartService(s IService) {
 	ac := &ActorService{s, make(map[reflect.Type]MessageFunc)}
-	props := actor.FromInstance(ac)
+
+	// decider := func(reason interface{}) actor.Directive {
+	// 	log.Error("handling failure for child:%v", reason)
+	// 	return actor.StopDirective
+	// }
+	// supervisor := actor.NewOneForOneStrategy(10, 1000, decider)
+
+	props := actor.FromProducer(func() actor.Actor { return ac }) //.WithSupervisor(supervisor)
+	//props := actor.FromInstance(ac)
 	if s.GetAddress() != "" {
 		remote.Start(s.GetAddress())
 	}
