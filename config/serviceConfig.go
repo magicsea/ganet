@@ -13,7 +13,7 @@ type LogConfig struct {
 }
 
 type ServiceConfig struct {
-	Services    map[string]*ServiceNodeConfig `json:"local"`
+	Services    []*ServiceNodeConfig `json:"local"`
 	RemoteAddrs map[string]string             `json:"remote"`
 	LogConf     *LogConfig                    `json:"log"`
 	Proto string 								`json:"proto"`
@@ -29,12 +29,22 @@ func GetGlobleConfig() *ServiceConfig {
 	return &globleConfig
 }
 
+func GetService(ser string) *ServiceNodeConfig {
+	for _,v := range globleConfig.Services {
+		if v.ServiceName==ser {
+			return v
+		}
+	}
+	return nil
+}
+
 func GetServiceConfig(ser string, key string) interface{} {
-	return globleConfig.Services[ser].Conf[key]
+	node := GetService(ser)
+	return node.Conf[key]
 }
 
 func GetServiceConfigString(ser string, key string) string {
-	if v,b:=globleConfig.Services[ser].Conf[key];b {
+	if v:=GetServiceConfig(ser,key);v!=nil {
 		return v.(string)
 	}
 	return ""
@@ -50,7 +60,7 @@ func GetServiceAddress(serviceName string) string {
 	if globleConfig.RemoteAddrs != nil {
 		return globleConfig.RemoteAddrs[serviceName]
 	} else {
-		return globleConfig.Services[serviceName].RemoteAddr
+		return GetService(serviceName).RemoteAddr
 	}
 }
 

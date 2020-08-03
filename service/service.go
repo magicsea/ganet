@@ -52,7 +52,10 @@ func (s *ActorService) Receive(context actor.Context) {
 	//}
 	switch msg := context.Message().(type) {
 	case *actor.Started:
-		fmt.Println("Started, initialize actor here")
+		fmt.Println("Started, initialize actor here:",s.serviceIns.GetName())
+		s.serviceIns.SetPID(context.Self())
+		s.serviceIns.OnStart(s)
+		s.serviceIns.OnRun()
 	case *actor.Stopping:
 		fmt.Println("Stopping, actor is about shut down")
 	case *actor.Stopped:
@@ -61,7 +64,7 @@ func (s *ActorService) Receive(context actor.Context) {
 		fmt.Println("Restarting, actor is about restart")
 	case *ServiceRun:
 		fmt.Println("ServiceRun ", s.serviceIns.GetName())
-		s.serviceIns.OnRun()
+		//s.serviceIns.OnRun()
 	default:
 		log.Debug("recv defalult:", msg)
 		s.serviceIns.OnReceive(context.(Context))
@@ -90,10 +93,10 @@ func StartService(s IService) {
 	if s.GetAddress() != "" {
 		remote.Start(s.GetAddress())
 	}
-	pid, err := actor.SpawnNamed(props, s.GetName())
+	_, err := actor.SpawnNamed(props, s.GetName())
 	if err == nil {
-		s.SetPID(pid)
-		s.OnStart(ac)
+		//s.SetPID(pid)
+		//s.OnStart(ac)
 	} else {
 		log.Error("#############actor.SpawnNamed error:%v", err)
 	}

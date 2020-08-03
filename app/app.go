@@ -78,11 +78,12 @@ func Run(conf *ServiceConfig, ms ...module.IModule) {
 	}
 
 	//service.run
-	log.Info("run services.")
-	for _, ser := range services {
-		log.Info("run服务:%s", ser.GetName())
-		ser.GetPID().Tell(new(service.ServiceRun))
-	}
+	log.Info("run services")
+	//for _, ser := range services {
+	//	log.Info("run服务:%s", ser.GetName())
+	//	ser.GetPID().Tell(new(service.ServiceRun))
+	//}
+	//
 
 	// close
 	c := make(chan os.Signal, 1)

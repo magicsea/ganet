@@ -9,6 +9,11 @@ import (
 	"github.com/magicsea/ganet/log"
 )
 
+type INetClient interface {
+	Set(addr string, newAgentFunc func(Conn) Agent)
+	Start()
+}
+
 type TCPClient struct {
 	sync.Mutex
 	Addr            string
@@ -16,7 +21,7 @@ type TCPClient struct {
 	ConnectInterval time.Duration
 	PendingWriteNum int
 	AutoReconnect   bool
-	NewAgent        func(*TCPConn) Agent
+	NewAgent        func(Conn) Agent
 	conns           ConnSet
 	wg              sync.WaitGroup
 	closeFlag       bool
@@ -27,6 +32,11 @@ type TCPClient struct {
 	MaxMsgLen    uint32
 	LittleEndian bool
 	msgParser    *MsgParser
+}
+
+func (client *TCPClient) Set(addr string, newAgentFunc func(Conn) Agent) {
+	client.Addr = addr
+	client.NewAgent = newAgentFunc
 }
 
 func (client *TCPClient) Start() {

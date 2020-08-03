@@ -18,11 +18,16 @@ type WSClient struct {
 	MaxMsgLen        uint32
 	HandshakeTimeout time.Duration
 	AutoReconnect    bool
-	NewAgent         func(*WSConn) Agent
+	NewAgent         func(Conn) Agent
 	dialer           websocket.Dialer
 	conns            WebsocketConnSet
 	wg               sync.WaitGroup
 	closeFlag        bool
+}
+
+func (client *WSClient) Set(addr string, newAgentFunc func(Conn) Agent) {
+	client.Addr = addr
+	client.NewAgent = newAgentFunc
 }
 
 func (client *WSClient) Start() {
